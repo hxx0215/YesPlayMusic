@@ -92,6 +92,7 @@ export default {
         uid: this.activeUser.userId,
         limit: 1,
       }).then(data => {
+        console.log('update liked song play');
         this.updateData({
           key: 'likedSongPlaylistID',
           value: data.playlist[0].id,

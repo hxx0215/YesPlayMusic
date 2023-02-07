@@ -28,6 +28,7 @@ export function getListSourcePath() {
 }
 
 export async function getRecommendPlayList(limit, removePrivateRecommand) {
+  console.log('getRecommendPlayList');
   if (isAccountLoggedIn()) {
     const playlists = await Promise.all([
       dailyRecommendPlaylist(),
@@ -40,6 +41,7 @@ export async function getRecommendPlayList(limit, removePrivateRecommand) {
     }
     return recommend.concat(playlists[1].result).slice(0, limit);
   } else {
+    console.log('not login');
     const response = await recommendPlaylist({ limit });
     return response.result;
   }

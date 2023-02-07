@@ -111,6 +111,7 @@ export default {
             data: result.playlist,
           });
           // 更新用户”喜欢的歌曲“歌单ID
+          console.log('action update liked song id');
           commit('updateData', {
             key: 'likedSongPlaylistID',
             value: result.playlist[0].id,

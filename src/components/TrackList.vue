@@ -216,6 +216,7 @@ export default {
       }
     },
     playThisListDefault(trackID) {
+      console.log('type:', this.type);
       if (this.type === 'playlist') {
         this.player.playPlaylistByID(this.id, trackID);
       } else if (this.type === 'album') {

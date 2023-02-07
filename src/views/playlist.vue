@@ -404,6 +404,7 @@ export default {
     },
   },
   created() {
+    console.log('router name', this.$route.name, this.data.likedSongPlaylistID);
     if (this.$route.name === 'likedSongs') {
       this.loadData(this.data.likedSongPlaylistID);
     } else {
@@ -447,11 +448,13 @@ export default {
       });
     },
     loadData(id, next = undefined) {
+      console.log('load data id:', id);
       this.id = id;
       getPlaylistDetail(this.id, true)
         .then(data => {
           this.playlist = data.playlist;
           this.tracks = data.playlist.tracks;
+          console.log('tracks', this.tracks.reduce((acc,cur) => acc > cur.id ? acc : cur.id, 0))
           NProgress.done();
           if (next !== undefined) next();
           this.show = true;

@@ -387,9 +387,12 @@ export default class {
   _getAudioSourceFromNetease(track) {
     if (isAccountLoggedIn()) {
       return getMP3(track.id).then(result => {
+        console.log('get mp3:', result);
         if (!result.data[0]) return null;
         if (!result.data[0].url) return null;
+        console.log('info', result.data[0].freeTrialInfo);
         if (result.data[0].freeTrialInfo !== null) return null; // 跳过只能试听的歌曲
+        console.log('url:', result.data[0].url);
         const source = result.data[0].url.replace(/^http:/, 'https:');
         if (store.state.settings.automaticallyCacheSongs) {
           cacheTrackSource(track, source, result.data[0].br);
@@ -471,11 +474,13 @@ export default class {
     return this._getAudioSourceBlobURL(buffer);
   }
   _getAudioSource(track) {
+    console.log('get track', track)
     return this._getAudioSourceFromCache(String(track.id))
       .then(source => {
         return source ?? this._getAudioSourceFromNetease(track);
       })
       .then(source => {
+        console.log('source:', source);
         return source ?? this._getAudioSourceFromUnblockMusic(track);
       });
   }
