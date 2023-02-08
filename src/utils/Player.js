@@ -474,7 +474,14 @@ export default class {
     return this._getAudioSourceBlobURL(buffer);
   }
   _getAudioSource(track) {
-    console.log('get track', track)
+    if (electron){
+      ipcRenderer.invoke('collectTrack', track, store.state.settings.collectURL).then(()=>{
+        console.log('over')
+      })
+    }else{
+      console.log('post ',track,'to', store.state.settings.collectURL)
+    }
+    
     return this._getAudioSourceFromCache(String(track.id))
       .then(source => {
         return source ?? this._getAudioSourceFromNetease(track);

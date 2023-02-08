@@ -29,6 +29,7 @@ let localStorage = {
     showLibraryDefault: false,
     subTitleDefault: false,
     linuxEnableCustomTitlebar: false,
+    collectURL:'',
     enabledPlaylistCategories,
     proxyConfig: {
       protocol: 'noProxy',

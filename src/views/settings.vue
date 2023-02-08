@@ -568,6 +568,15 @@
           </div>
         </div>
       </div>
+      <div class="item">
+        <div class="left">
+          <div class="title">收集地址</div>
+        </div>
+        <div class="right">
+          <input v-model="collectURL"
+            class="text-input margin-right-0" />
+        </div>
+      </div>
 
       <div v-if="isElectron">
         <h3>代理</h3>
@@ -1182,6 +1191,17 @@ export default {
     isLastfmConnected() {
       return this.lastfm.key !== undefined;
     },
+    collectURL:{
+      get(){
+        return this.settings.collectURL
+      },
+      set(value){
+        this.$store.commit('updateSettings',{
+          key: 'collectURL',
+          value
+        })
+      }
+    }
   },
   created() {
     this.countDBSize('tracks');

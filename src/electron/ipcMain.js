@@ -109,6 +109,13 @@ async function getBiliVideoFile(url) {
   return encodedData;
 }
 
+async function collectTrack(){
+  const axios = await import('axios').then(m => m.default);
+  axios.get('https://jsonplaceholder.typicode.com/users?_limit=2').then(res => {
+    console.log(res)
+  })
+}
+
 /**
  * Parse the source string (`a, b`) to source list `['a', 'b']`.
  *
@@ -197,6 +204,13 @@ export function initIpcMain(win, store, trayEventEmitter) {
       }
     }
   );
+  
+  ipcMain.handle('collectTrack', async (e,track, url) =>{
+    log('event:' + e)
+    console.log('send track',track)
+    console.log('url:', url)
+    return collectTrack()
+  })
 
   ipcMain.on('close', e => {
     if (isMac) {
@@ -308,6 +322,7 @@ export function initIpcMain(win, store, trayEventEmitter) {
     globalShortcut.unregisterAll();
     registerGlobalShortcut(win, store);
   });
+  
 
   if (isCreateTray) {
     ipcMain.on('updateTrayTooltip', (_, title) => {
