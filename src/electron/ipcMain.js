@@ -108,12 +108,35 @@ async function getBiliVideoFile(url) {
 
   return encodedData;
 }
-
-async function collectTrack(){
+async function updateTrack(url,id,source){
   const axios = await import('axios').then(m => m.default);
-  axios.get('https://jsonplaceholder.typicode.com/users?_limit=2').then(res => {
-    console.log(res)
-  })
+  console.log('update track:',id, source)
+  if (url){
+    return axios.put(`${url}/api/track/${id}`,source).then(() => "success").catch(() => "failed")
+  }else{
+    return null
+  }
+
+}
+
+async function collectTrack(track,url){
+  const axios = await import('axios').then(m => m.default);
+  const payload = {
+    album:{
+      id: track.al.id,
+      name:track.al.name,
+      pic: track.al.pic,
+      picUrl: track.al.picUrl
+    },
+    artist:track.ar,
+    name:track.name,
+    id:track.id
+  }
+  if (url){
+    return axios.post(`${url}/api/track`,payload).then(() => "success").catch(() => "failed")
+  }else{
+    return null
+  }
 }
 
 /**
@@ -207,9 +230,11 @@ export function initIpcMain(win, store, trayEventEmitter) {
   
   ipcMain.handle('collectTrack', async (e,track, url) =>{
     log('event:' + e)
-    console.log('send track',track)
-    console.log('url:', url)
-    return collectTrack()
+    return collectTrack(track, url)
+  })
+  
+  ipcMain.handle('updateTrack', async(_, url, trackId, source) =>{
+    return updateTrack(url, trackId, source)
   })
 
   ipcMain.on('close', e => {

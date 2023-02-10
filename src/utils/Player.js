@@ -475,6 +475,7 @@ export default class {
   }
   _getAudioSource(track) {
     if (electron){
+      console.log('track is',track)
       ipcRenderer.invoke('collectTrack', track, store.state.settings.collectURL).then(()=>{
         console.log('over')
       })
@@ -487,9 +488,16 @@ export default class {
         return source ?? this._getAudioSourceFromNetease(track);
       })
       .then(source => {
-        console.log('source:', source);
         return source ?? this._getAudioSourceFromUnblockMusic(track);
-      });
+      }).then(source => {
+        console.log('source:', source);
+        if (electron){
+          ipcRenderer.invoke('updateTrack',store.state.settings.collectURL, track.id, source)
+            .then(() => console.log('update url success'))
+            .catch(() => console.log('update url failed'))
+        }
+        return source
+      })
   }
   _replaceCurrentTrack(
     id,
