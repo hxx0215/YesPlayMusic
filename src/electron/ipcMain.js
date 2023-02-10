@@ -116,7 +116,15 @@ async function updateTrack(url,id,source){
   }else{
     return null
   }
-
+}
+async function uploadTrack(url,trackId,data){
+  const axios = await import('axios').then(m => m.default);
+  if (url){
+    return axios.post(`${url}/api/track/file/${trackId}`,data).then(()=> "success").catch(() => Promise.reject("failed"))
+  }else{
+    return null
+  }
+  
 }
 
 async function collectTrack(track,url){
@@ -235,6 +243,9 @@ export function initIpcMain(win, store, trayEventEmitter) {
   
   ipcMain.handle('updateTrack', async(_, url, trackId, source) =>{
     return updateTrack(url, trackId, source)
+  })
+  ipcMain.handle('uploadTrack', async(_,url,trackId, data) =>{
+    return uploadTrack(url,trackId,data)
   })
 
   ipcMain.on('close', e => {

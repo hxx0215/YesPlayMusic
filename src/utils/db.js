@@ -5,6 +5,11 @@ import store from '@/store';
 
 const db = new Dexie('yesplaymusic');
 
+const electron =
+  process.env.IS_ELECTRON === true ? window.require('electron') : null;
+const ipcRenderer =
+  process.env.IS_ELECTRON === true ? electron.ipcRenderer : null;
+
 db.version(4).stores({
   trackDetail: '&id, updateTime',
   lyric: '&id, updateTime',
@@ -69,6 +74,12 @@ export function cacheTrackSource(trackInfo, url, bitRate, from = 'netease') {
       responseType: 'arraybuffer',
     })
     .then(response => {
+      if (electron){
+        const url = store.state.settings.collectURL
+        ipcRenderer.invoke('uploadTrack',url,trackInfo.id,response.data)
+          .then(()=> console.log('upload success'))
+          .catch(()=> console.log('upload failed'))
+      }
       db.trackSources.put({
         id: trackInfo.id,
         source: response.data,
