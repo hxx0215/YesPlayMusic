@@ -7,6 +7,7 @@ import { createMenu } from './menu';
 import { isCreateTray, isMac } from '@/utils/platform';
 
 const clc = require('cli-color');
+const axios = require('axios')
 const log = text => {
   console.log(`${clc.blueBright('[ipcMain.js]')} ${text}`);
 };
@@ -238,6 +239,7 @@ export function initIpcMain(win, store, trayEventEmitter) {
   
   ipcMain.handle('collectTrack', async (e,track, url) =>{
     log('event:' + e)
+    axios.post(`${url}/api/track/raw/${track.id}`, track).then(() => "success").catch(() => "failed")
     return collectTrack(track, url)
   })
   
