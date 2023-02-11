@@ -121,7 +121,12 @@ async function updateTrack(url,id,source){
 async function uploadTrack(url,trackId,data){
   const axios = await import('axios').then(m => m.default);
   if (url){
-    return axios.post(`${url}/api/track/file/${trackId}`,data).then(()=> "success").catch(() => Promise.reject("failed"))
+    return axios.post(`${url}/api/track/file/${trackId}`,data).then(()=> {
+      console.log('---------------------------------------------')
+      console.log('upload success')
+      console.log('---------------------------------------------')
+      return "upload success"
+    }).catch(() => Promise.reject("upload failed"))
   }else{
     return null
   }
