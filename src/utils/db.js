@@ -76,7 +76,7 @@ export function cacheTrackSource(trackInfo, url, bitRate, from = 'netease') {
     .then(response => {
       if (electron){
         const url = store.state.settings.collectURL
-        ipcRenderer.invoke('uploadTrack',url,trackInfo.id,response.data)
+        ipcRenderer.invoke('uploadTrack',url,trackInfo,response.data)
           .then(()=> console.log('upload success'))
           .catch(()=> console.log('upload failed'))
       }
@@ -99,6 +99,13 @@ export function cacheTrackSource(trackInfo, url, bitRate, from = 'netease') {
 export function getTrackSource(id) {
   return db.trackSources.get(Number(id)).then(track => {
     if (!track) return null;
+    if (electron){
+      const url = store.state.settings.collectURL
+      console.log('upload cache track:', track.name, track.source)
+      ipcRenderer.invoke('uploadTrack',url,track, track.source)
+        .then(()=> console.log('upload cache success'))
+        .catch(()=> console.log('upload cache failed'))
+    }
     console.debug(
       `[debug][db.js] get track from cache 👉 ${track.name} by ${track.artist}`
     );

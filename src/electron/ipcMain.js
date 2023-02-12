@@ -118,15 +118,24 @@ async function updateTrack(url,id,source){
     return null
   }
 }
-async function uploadTrack(url,trackId,data){
+async function uploadTrack(url,track,data){
   const axios = await import('axios').then(m => m.default);
   if (url){
-    return axios.post(`${url}/api/track/file/${trackId}`,data).then(()=> {
+    return axios.post(`${url}/api/track/file/${track.id}`,data,{
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity
+    }).then(()=> {
       console.log('---------------------------------------------')
-      console.log('upload success')
+      console.log(`upload ${track.name} success`)
       console.log('---------------------------------------------')
       return "upload success"
-    }).catch(() => Promise.reject("upload failed"))
+    }).catch((e) => {
+      console.log('---------------------------------------------')
+      console.log(`upload ${track.name} failed`)
+      console.log(`exception is ${e}`)
+      console.log('---------------------------------------------')
+      Promise.reject("upload failed")
+    })
   }else{
     return null
   }
@@ -251,8 +260,8 @@ export function initIpcMain(win, store, trayEventEmitter) {
   ipcMain.handle('updateTrack', async(_, url, trackId, source) =>{
     return updateTrack(url, trackId, source)
   })
-  ipcMain.handle('uploadTrack', async(_,url,trackId, data) =>{
-    return uploadTrack(url,trackId,data)
+  ipcMain.handle('uploadTrack', async(_,url,track, data) =>{
+    return uploadTrack(url,track,data)
   })
 
   ipcMain.on('close', e => {
