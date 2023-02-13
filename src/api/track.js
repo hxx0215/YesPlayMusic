@@ -82,6 +82,7 @@ export function getLyric(id) {
         id,
       },
     }).then(result => {
+      console.log('the lyric is:', result)
       cacheLyric(id, result);
       return result;
     });
