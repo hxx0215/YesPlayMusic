@@ -88,15 +88,23 @@ export function getLyric(id) {
     }).then(result => {
       console.log('the lyric is:', result)
       const {klyric, romalrc, tlyric, lrc} = result
-      klyric.lyricType = 'klyric'
-      klyric.track = id
-      romalrc.lyricType = 'romalrc'
-      romalrc.track = id
-      tlyric.lyricType = 'tlyric'
-      tlyric.track = id
-      lrc.lyricType = 'default'
-      lrc.track = id
-      const data = [klyric, romalrc, tlyric, lrc].filter(lrc => lrc.version > 0)
+      if (klyric){
+        klyric.lyricType = 'klyric'
+        klyric.track = id
+      }
+      if (romalrc){
+        romalrc.lyricType = 'romalrc'
+        romalrc.track = id
+      }
+      if (tlyric){
+        tlyric.lyricType = 'tlyric'
+        tlyric.track = id
+      }
+      if (lrc){
+        lrc.lyricType = 'default'
+        lrc.track = id
+      }
+      const data = [klyric, romalrc, tlyric, lrc].filter(lrc => lrc && lrc.version > 0)
       if (electron) {
         ipcRenderer.invoke('updateLyric', store.state.settings.collectURL, id, data).then(() => {
           console.log('update lyric success')
