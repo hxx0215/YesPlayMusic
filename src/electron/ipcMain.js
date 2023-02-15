@@ -162,6 +162,12 @@ async function collectTrack(track,url){
   }
 }
 
+async function updateLyric(url, track, lyrics){
+  if (url){
+    return axios.post(`${url}/api/track/lyric/${track}`,lyrics).then(() => console.log('update lyric success'))
+  }
+}
+
 /**
  * Parse the source string (`a, b`) to source list `['a', 'b']`.
  *
@@ -262,6 +268,9 @@ export function initIpcMain(win, store, trayEventEmitter) {
   })
   ipcMain.handle('uploadTrack', async(_,url,track, data) =>{
     return uploadTrack(url,track,data)
+  })
+  ipcMain.handle('updateLyric', async(_,url,track,data) => {
+    return updateLyric(url, track, data)
   })
 
   ipcMain.on('close', e => {

@@ -8,6 +8,10 @@ import {
   getLyricFromCache,
 } from '@/utils/db';
 
+const electron =
+  process.env.IS_ELECTRON === true ? window.require('electron') : null;
+const ipcRenderer =
+  process.env.IS_ELECTRON === true ? electron.ipcRenderer : null;
 /**
  * 获取音乐 url
  * 说明 : 使用歌单详情接口后 , 能得到的音乐的 id, 但不能得到的音乐 url, 调用此接口, 传入的音乐 id( 可多个 , 用逗号隔开 ), 可以获取对应的音乐的 url,
@@ -83,6 +87,23 @@ export function getLyric(id) {
       },
     }).then(result => {
       console.log('the lyric is:', result)
+      const {klyric, romalrc, tlyric, lrc} = result
+      klyric.lyricType = 'klyric'
+      klyric.track = id
+      romalrc.lyricType = 'romalrc'
+      romalrc.track = id
+      tlyric.lyricType = 'tlyric'
+      tlyric.track = id
+      lrc.lyricType = 'default'
+      lrc.track = id
+      const data = [klyric, romalrc, tlyric, lrc].filter(lrc => lrc.version > 0)
+      if (electron) {
+        ipcRenderer.invoke('updateLyric', store.state.settings.collectURL, id, data).then(() => {
+          console.log('update lyric success')
+        }).catch(() => {
+          console.log('update failed')
+        })
+      }
       cacheLyric(id, result);
       return result;
     });
